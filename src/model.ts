@@ -1,4 +1,3 @@
-
 export interface World {
   objects: Obj[]
   ts: number

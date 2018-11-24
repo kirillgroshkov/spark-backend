@@ -1,6 +1,5 @@
 import { World } from './model'
 
-
 class WorldService {
   constructor () {
     this.world = this.createEmtpyWorld()
