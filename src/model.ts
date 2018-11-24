@@ -1,6 +1,8 @@
 export interface World {
   objects: Obj[]
   ts: number
+  gameStarted: number
+  reachedCenter: number
 }
 
 export interface Obj {
@@ -8,5 +10,6 @@ export interface Obj {
   x: number
   y: number
   z: number
+  speed: number
   meta?: any
 }

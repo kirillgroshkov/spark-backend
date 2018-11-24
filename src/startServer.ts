@@ -9,10 +9,12 @@ process.on('SIGTERM', () => stopServer())
 
 process.on('uncaughtException', err => {
   console.log('uncaughtException: ', err)
+  process.exit(1)
 })
 
 process.on('unhandledRejection', err => {
   console.log('unhandledRejection: ', err)
+  process.exit(1)
 })
 
 const app = express()

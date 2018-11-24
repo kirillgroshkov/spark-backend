@@ -1,4 +1,5 @@
 import { Application } from 'express'
+import { getMapHandler } from './getMap.handler'
 import { getObjectsHandler } from './getObjects.handler'
 
 class Api {
@@ -24,6 +25,7 @@ class Api {
     })
 
     app.get('/objects', getObjectsHandler)
+    app.get('/objects/map', getMapHandler)
   }
 }
 
