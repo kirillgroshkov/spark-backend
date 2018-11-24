@@ -1,0 +1,10 @@
+#
+# .gcloudignore
+#
+/.gcloudignore
+/.git
+/.gitignore
+# #!include:.gitignore
+/src
+/node_modules
+/.idea
