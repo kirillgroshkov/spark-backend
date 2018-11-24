@@ -13,6 +13,12 @@ test('test1', async () => {
 
 test('spawnNewMinion', async () => {
   let m = worldService.spawnNewMinion()
-  m = worldService.spawnNewMinion()
   console.log(m)
+  const now = Date.now()
+
+  for (let i = 0; i < 20; i++) {
+    worldService.doStep(now, m)
+    console.log(m)
+    if (m.x === 0 && m.y === 0) break
+  }
 })

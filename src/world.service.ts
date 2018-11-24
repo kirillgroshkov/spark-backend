@@ -148,6 +148,13 @@ class WorldService {
       console.log(`${o.id} reached center ${this.world.reachedCenter}`)
     }
   }
+
+  /**
+   * Mutates the world
+   */
+  killObject (id: string): void {
+    this.world.objects = this.world.objects.filter(o => o.id !== id)
+  }
 }
 
 export const worldService = new WorldService()

@@ -1,4 +1,4 @@
-import { World } from './model'
+import { Obj, World } from './model'
 import { worldService } from './world.service'
 
 /**
@@ -22,7 +22,8 @@ class MapService {
     }
 
     // Put objects on the map!
-    w.objects.forEach(o => {
+    const objects: Obj[] = JSON.parse(JSON.stringify(w.objects)) // deep copy
+    objects.forEach(o => {
       const x = Math.round(o.x) + 10
       const y = Math.round(o.y) + 10
       if (!m[y]) {
