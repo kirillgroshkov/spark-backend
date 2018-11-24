@@ -3,13 +3,14 @@ import { Obj, World } from './model'
 
 class WorldService {
   constructor () {
-    this.world = this.createEmtpyWorld()
+    this.restart()
   }
 
   world!: World
   gameStarted!: number
   interval?: NodeJS.Timeout
   lastId = 0
+  maxObjects = 3
 
   getWorld (toFixed = false): World {
     // deep copy
@@ -29,6 +30,10 @@ class WorldService {
     }
   }
 
+  restart (): void {
+    this.world = this.createEmtpyWorld()
+  }
+
   createEmtpyWorld (): World {
     const now = Date.now()
     this.gameStarted = now
@@ -40,6 +45,7 @@ class WorldService {
       ts: now,
       gameStarted: now,
       reachedCenter: 0,
+      killed: 0,
     }
   }
 
@@ -61,7 +67,7 @@ class WorldService {
     this.world.objects = this.world.objects.filter(o => o.x !== 0 && o.y !== 0)
 
     // spawn one if empty
-    if (!this.world.objects.length) {
+    if (this.world.objects.length < this.maxObjects) {
       this.world.objects.push(this.spawnNewMinion())
     }
   }
@@ -77,20 +83,20 @@ class WorldService {
     switch (side) {
       case 0:
         y = -10
-        x = -10 + randomSharedUtil.randomInt(0, 20)
+        x = -9 + randomSharedUtil.randomInt(0, 18)
         break
       case 1:
         x = 10
-        y = -10 + randomSharedUtil.randomInt(0, 20)
+        y = -9 + randomSharedUtil.randomInt(0, 18)
         break
       case 2:
         y = 10
-        x = -10 + randomSharedUtil.randomInt(0, 20)
+        x = -9 + randomSharedUtil.randomInt(0, 18)
         break
       case 3:
       default:
         x = -10
-        y = -10 + randomSharedUtil.randomInt(0, 20)
+        y = -9 + randomSharedUtil.randomInt(0, 18)
         break
     }
 
@@ -126,8 +132,8 @@ class WorldService {
       yRatio = 0.5 * Math.sign(o.y)
     }
 
-    const xInc = -Math.sign(o.x) * xRatio * o.speed
-    const yInc = -Math.sign(o.y) * yRatio * o.speed
+    const xInc = -Math.sign(o.x) * Math.abs(xRatio) * o.speed
+    const yInc = -Math.sign(o.y) * Math.abs(yRatio) * o.speed
 
     // const ts = Math.floor(now / 1000)
     // o.x = ts % 10
@@ -153,7 +159,12 @@ class WorldService {
    * Mutates the world
    */
   killObject (id: string): void {
+    const objects1 = this.world.objects.length
     this.world.objects = this.world.objects.filter(o => o.id !== id)
+    if (this.world.objects.length < objects1) {
+      this.world.killed++
+      this.maxObjects = 1 + Math.ceil(this.world.killed / 10)
+    }
   }
 }
 

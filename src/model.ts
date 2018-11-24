@@ -3,6 +3,7 @@ export interface World {
   ts: number
   gameStarted: number
   reachedCenter: number
+  killed: number
 }
 
 export interface Obj {

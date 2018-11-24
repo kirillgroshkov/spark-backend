@@ -13,10 +13,10 @@ export type WorldMap = string[][]
 class MapService {
   renderMap (w: World): WorldMap {
     const m: WorldMap = []
-    for (let y = 0; y < 20; y++) {
+    for (let y = 0; y <= 20; y++) {
       m[y] = []
 
-      for (let x = 0; x < 20; x++) {
+      for (let x = 0; x <= 20; x++) {
         m[y][x] = '.'
       }
     }
@@ -29,7 +29,7 @@ class MapService {
       if (!m[y]) {
         console.log(`m[${y}] is undefined!!!!!!`)
       } else {
-        m[ y ][ x ] = o.id.substr(0, 1)
+        m[y][x] = o.id.substr(0, 1)
       }
     })
 

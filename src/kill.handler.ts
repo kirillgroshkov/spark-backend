@@ -11,5 +11,4 @@ export const killHandler: RequestHandler = (req, res, next) => {
 
   const world = worldService.getWorld(true)
   res.json(world)
-  
 }
