@@ -2,18 +2,20 @@ import { randomSharedUtil } from '@naturalcycles/js-lib'
 import { Obj, World } from './model'
 
 const TICK_INTERVAL = 100
-const LOSES_TO_RESTART = 30
+const LOSES_TO_RESTART = 50
+const STARTING_NUMBER_OF_OBJECTS = 6
 
 class WorldService {
   constructor () {
     this.restart()
   }
 
-  world!: World
+  private world!: World
   gameStarted!: number
   interval?: NodeJS.Timeout
   lastId!: number
   maxObjects!: number
+  killedMax = 0
 
   getWorld (toFixed = false): World {
     // deep copy
@@ -30,14 +32,15 @@ class WorldService {
     return {
       ...w,
       ts: Date.now(),
-    }
+      killedMax: this.killedMax,
+    } as World
   }
 
   restart (): void {
     const now = Date.now()
     this.gameStarted = now
     this.lastId = 0
-    this.maxObjects = 3
+    this.maxObjects = STARTING_NUMBER_OF_OBJECTS
     this.world = this.createEmtpyWorld()
   }
 
@@ -116,7 +119,7 @@ class WorldService {
       z: 0,
       // speed: 0.8 + (randomSharedUtil.randomInt(0, 9) - 5) / 10,
       // speed: 0.2 + (randomSharedUtil.randomInt(0, 9) - 5) / 10,
-      speed: 0.015,
+      speed: 0.015 + randomSharedUtil.randomInt(0, 20) * 0.001,
     }
   }
 
@@ -174,6 +177,7 @@ class WorldService {
     this.world.objects = this.world.objects.filter(o => !ids.includes(o.id))
     if (this.world.objects.length < objects1) {
       this.world.killed += objects1 - this.world.objects.length
+      this.killedMax = Math.max(this.killedMax, this.world.killed)
       this.maxObjects = 2 + Math.ceil(this.world.killed / 10)
     }
   }
