@@ -29,7 +29,7 @@ class MapService {
       if (!m[y]) {
         console.log(`m[${y}] is undefined!!!!!!`)
       } else {
-        m[y][x] = o.id.substr(0, 1)
+        m[y][x] = o.id.substr(o.id.length-1)
       }
     })
 
@@ -42,7 +42,7 @@ class MapService {
 
   logMap (m: WorldMap): void {
     const strings: string[] = []
-    for (let y = 0; y < 20; y++) {
+    for (let y = 0; y <= 20; y++) {
       strings.push(m[y].join(''))
     }
 

@@ -31,6 +31,7 @@ class Api {
     app.post('/objects/kill/:id', killHandler)
     app.get('/objects/kill/:id', killHandler) // for debugging
     app.post('/restart', restartHandler)
+    app.get('/restart', restartHandler)
   }
 }
 

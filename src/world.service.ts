@@ -1,6 +1,9 @@
 import { randomSharedUtil } from '@naturalcycles/js-lib'
 import { Obj, World } from './model'
 
+const TICK_INTERVAL = 100
+const LOSES_TO_RESTART = 30
+
 class WorldService {
   constructor () {
     this.restart()
@@ -9,8 +12,8 @@ class WorldService {
   world!: World
   gameStarted!: number
   interval?: NodeJS.Timeout
-  lastId = 0
-  maxObjects = 3
+  lastId!: number
+  maxObjects!: number
 
   getWorld (toFixed = false): World {
     // deep copy
@@ -19,9 +22,9 @@ class WorldService {
     if (toFixed) {
       w.objects = w.objects.map(o => ({
         ...o,
-        x: Number(o.x.toFixed(3)),
-        y: Number(o.y.toFixed(3)),
-        z: Number(o.z.toFixed(3)),
+        x: Number(o.x.toFixed(4)),
+        y: Number(o.y.toFixed(4)),
+        z: Number(o.z.toFixed(4)),
       }))
     }
     return {
@@ -31,26 +34,27 @@ class WorldService {
   }
 
   restart (): void {
+    const now = Date.now()
+    this.gameStarted = now
+    this.lastId = 0
+    this.maxObjects = 3
     this.world = this.createEmtpyWorld()
   }
 
   createEmtpyWorld (): World {
-    const now = Date.now()
-    this.gameStarted = now
-
     return {
       objects: [
         this.spawnNewMinion(),
       ],
-      ts: now,
-      gameStarted: now,
+      ts: this.gameStarted,
+      gameStarted: this.gameStarted,
       reachedCenter: 0,
       killed: 0,
     }
   }
 
   startTimer (): void {
-    this.interval = setInterval(() => this.tick(), 1000)
+    this.interval = setInterval(() => this.tick(), TICK_INTERVAL)
   }
 
   stopTimer (): void {
@@ -69,6 +73,11 @@ class WorldService {
     // spawn one if empty
     if (this.world.objects.length < this.maxObjects) {
       this.world.objects.push(this.spawnNewMinion())
+    }
+
+    if (this.world.reachedCenter >= LOSES_TO_RESTART) {
+      console.log(`reachedCenter (${this.world.reachedCenter}) > ${LOSES_TO_RESTART}, restarting`)
+      this.restart()
     }
   }
 
@@ -105,7 +114,9 @@ class WorldService {
       x,
       y,
       z: 0,
-      speed: 1 + (randomSharedUtil.randomInt(0, 9) - 5) / 10,
+      // speed: 0.8 + (randomSharedUtil.randomInt(0, 9) - 5) / 10,
+      // speed: 0.2 + (randomSharedUtil.randomInt(0, 9) - 5) / 10,
+      speed: 0.015,
     }
   }
 
@@ -158,12 +169,12 @@ class WorldService {
   /**
    * Mutates the world
    */
-  killObject (id: string): void {
+  killObject (ids: string[]): void {
     const objects1 = this.world.objects.length
-    this.world.objects = this.world.objects.filter(o => o.id !== id)
+    this.world.objects = this.world.objects.filter(o => !ids.includes(o.id))
     if (this.world.objects.length < objects1) {
-      this.world.killed++
-      this.maxObjects = 1 + Math.ceil(this.world.killed / 10)
+      this.world.killed += objects1 - this.world.objects.length
+      this.maxObjects = 2 + Math.ceil(this.world.killed / 10)
     }
   }
 }

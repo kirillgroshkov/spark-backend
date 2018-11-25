@@ -7,7 +7,7 @@ export const getMapHandler: RequestHandler = (req, res, next) => {
   const m = mapService.renderMap(world)
 
   const strings: string[] = []
-  for (let y = 0; y < 20; y++) {
+  for (let y = 0; y <= 20; y++) {
     strings.push(m[y].join(''))
   }
 
