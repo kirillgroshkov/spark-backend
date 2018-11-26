@@ -3,7 +3,7 @@ import { Obj, World } from './model'
 
 const TICK_INTERVAL = 100
 const LOSES_TO_RESTART = 50
-const STARTING_NUMBER_OF_OBJECTS = 6
+const STARTING_NUMBER_OF_OBJECTS = 12
 
 class WorldService {
   constructor () {
@@ -178,7 +178,7 @@ class WorldService {
     if (this.world.objects.length < objects1) {
       this.world.killed += objects1 - this.world.objects.length
       this.killedMax = Math.max(this.killedMax, this.world.killed)
-      this.maxObjects = 2 + Math.ceil(this.world.killed / 10)
+      this.maxObjects = STARTING_NUMBER_OF_OBJECTS - 1 + Math.ceil(this.world.killed / 10)
     }
   }
 }
